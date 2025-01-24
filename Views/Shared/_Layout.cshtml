@@ -1,0 +1,34 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - OnlineStore</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a asp-controller="Home" asp-action="Index">Home</a></li>
+                <li><a asp-controller="Products" asp-action="Index">Products</a></li>
+                <li><a asp-controller="Cart" asp-action="Index">Cart</a></li>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <li><a asp-controller="Account" asp-action="Logout">Logout</a></li>
+                }
+                else
+                {
+                    <li><a asp-controller="Account" asp-action="Register">Register</a></li>
+                    <li><a asp-controller="Account" asp-action="Login">Login</a></li>
+                }
+            </ul>
+        </nav>
+    </header>
+    <div class="container">
+        <main>
+            @RenderBody()
+        </main>
+    </div>
+</body>
+</html>

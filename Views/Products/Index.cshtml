@@ -1,0 +1,31 @@
+﻿@model IEnumerable<OnlineStore.Models.Product>
+
+<h2>Products</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Price</th>
+            <th>Category</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model)
+        {
+            <tr>
+                <td>@product.Id</td>
+                <td>@product.Name</td>
+                <td>@product.Description</td>
+                <td>@product.Price</td>
+                <td>@product.Category.Name</td>
+                <td>
+                    <a href="/Products/Details/@product.Id">View Details</a>
+                    <a href="/Cart/AddToCart/@product.Id" class="btn btn-primary">Add to Cart</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
