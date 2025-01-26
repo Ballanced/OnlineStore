@@ -15,7 +15,11 @@
                 <li><a asp-controller="Cart" asp-action="Index">Cart</a></li>
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <li><a asp-controller="Account" asp-action="Logout">Logout</a></li>
+                    <li>
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="form-inline">
+                            <button type="submit" class="btn btn-link">Logout</button>
+                        </form>
+                    </li>
                 }
                 else
                 {
