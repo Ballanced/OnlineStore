@@ -50,7 +50,13 @@ namespace OnlineStore.Controllers
         {
             if (ModelState.IsValid)
             {
-                var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    // Логування знайденого користувача
+                    Console.WriteLine($"User found: {user.UserName}");
+
+                    var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     return RedirectToAction("Index", "Home");
@@ -60,7 +66,12 @@ namespace OnlineStore.Controllers
             return View(model);
         }
 
+            }
+            return RedirectToAction("Login");
+        }
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
