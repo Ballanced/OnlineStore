@@ -10,6 +10,6 @@ namespace OnlineStore.Models
         [Required]
         public string Address { get; set; }
 
-        // Інші поля, необхідні для замовлення
+        
     }
 }

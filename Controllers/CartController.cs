@@ -4,9 +4,11 @@ using OnlineStore.Extensions;
 using System.Collections.Generic;
 using System.Linq;
 using OnlineStore.Extensions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OnlineStore.Controllers
 {
+    [Authorize(Roles = "Customer,Administrator")]
     public class CartController : Controller
     {
         private readonly StoreDbContext _context;

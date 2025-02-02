@@ -17,6 +17,12 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => {
 }).AddEntityFrameworkStores<StoreDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("RequireAdministratorRole", policy => policy.RequireRole("Administrator"));
+    options.AddPolicy("RequireCustomerRole", policy => policy.RequireRole("Customer"));
+});
+
 builder.Services.AddSession();
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -34,7 +40,6 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.UseSession();
 
 app.MapStaticAssets();
@@ -44,4 +49,42 @@ app.MapControllerRoute(
     .WithStaticAssets();
 
 app.MapRazorPages();
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+    var roles = new[] { "Administrator", "Customer" };
+
+    foreach (var role in roles)
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
+
+    // Додавання адміністратора за замовчуванням
+    var adminEmail = "admin@example.com";
+    var adminPassword = "Admin123!";
+    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    if (adminUser == null)
+    {
+        var newAdmin = new ApplicationUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
+        await userManager.CreateAsync(newAdmin, adminPassword);
+        await userManager.AddToRoleAsync(newAdmin, "Administrator");
+    }
+    else
+    {
+        // Призначення ролі адміністратору, якщо користувач вже існує
+        if (!await userManager.IsInRoleAsync(adminUser, "Administrator"))
+        {
+            await userManager.AddToRoleAsync(adminUser, "Administrator");
+        }
+    }
+
+}
+
+
 app.Run();
