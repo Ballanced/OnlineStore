@@ -59,32 +59,30 @@ using (var scope = app.Services.CreateScope())
 
     foreach (var role in roles)
     {
-        if (!await roleManager.RoleExistsAsync(role))
+        if (!roleManager.RoleExistsAsync(role).Result)
         {
-            await roleManager.CreateAsync(new IdentityRole(role));
+            roleManager.CreateAsync(new IdentityRole(role)).Wait();
         }
     }
 
     // Додавання адміністратора за замовчуванням
     var adminEmail = "admin@example.com";
     var adminPassword = "Admin123!";
-    var adminUser = await userManager.FindByEmailAsync(adminEmail);
+    var adminUser = userManager.FindByEmailAsync(adminEmail).Result;
     if (adminUser == null)
     {
         var newAdmin = new ApplicationUser { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
-        await userManager.CreateAsync(newAdmin, adminPassword);
-        await userManager.AddToRoleAsync(newAdmin, "Administrator");
+        userManager.CreateAsync(newAdmin, adminPassword).Wait();
+        userManager.AddToRoleAsync(newAdmin, "Administrator").Wait();
     }
     else
     {
         // Призначення ролі адміністратору, якщо користувач вже існує
-        if (!await userManager.IsInRoleAsync(adminUser, "Administrator"))
+        if (!userManager.IsInRoleAsync(adminUser, "Administrator").Result)
         {
-            await userManager.AddToRoleAsync(adminUser, "Administrator");
+            userManager.AddToRoleAsync(adminUser, "Administrator").Wait();
         }
     }
-
 }
-
 
 app.Run();

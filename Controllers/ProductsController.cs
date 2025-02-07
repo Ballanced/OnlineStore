@@ -16,16 +16,11 @@ namespace OnlineStore.Controllers
             _context = context;
         }
 
-        // Список всіх продуктів
+        // Список всіх продуктів, доступний лише адміністраторам
         public async Task<IActionResult> Index()
         {
             return View(await _context.Products.ToListAsync());
         }
-
-
-
-
-
 
         public IActionResult Create()
         {
@@ -69,6 +64,7 @@ namespace OnlineStore.Controllers
             return View(product);
         }
 
+        // Редагування продукту, доступне лише адміністраторам
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -140,21 +136,7 @@ namespace OnlineStore.Controllers
 
 
 
-
-
-
-
-
-        private bool ProductExists(int id)
-        {
-            return _context.Products.Any(e => e.Id == id);
-        }
-
-
-
-
-
-        // Видалення продукту
+        // Видалення продукту, доступне лише адміністраторам
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -172,7 +154,7 @@ namespace OnlineStore.Controllers
             return View(product);
         }
 
-        [HttpPost, ActionName("Delete")]
+         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
@@ -182,7 +164,8 @@ namespace OnlineStore.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-
+        // Деталі продукту, доступні покупцям та адміністраторам
+        [Authorize(Roles = "Customer,Administrator")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -207,5 +190,18 @@ namespace OnlineStore.Controllers
             return View(product);
         }
 
+
+
+        // Список продуктів, доступний покупцям та адміністраторам
+        [Authorize(Roles = "Customer,Administrator")]
+        public IActionResult List()
+        {
+            return View(_context.Products.ToList());
+        }
+
+        private bool ProductExists(int id)
+        {
+            return _context.Products.Any(e => e.Id == id);
+        }
     }
 }
