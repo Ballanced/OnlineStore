@@ -76,7 +76,6 @@ using (var scope = app.Services.CreateScope())
     }
     else
     {
-        // Призначення ролі адміністратору, якщо користувач вже існує
         if (!userManager.IsInRoleAsync(adminUser, "Administrator").Result)
         {
             userManager.AddToRoleAsync(adminUser, "Administrator").Wait();
