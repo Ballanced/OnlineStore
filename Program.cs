@@ -65,7 +65,6 @@ using (var scope = app.Services.CreateScope())
         }
     }
 
-    // Додавання адміністратора за замовчуванням
     var adminEmail = "admin@example.com";
     var adminPassword = "Admin123!";
     var adminUser = userManager.FindByEmailAsync(adminEmail).Result;
